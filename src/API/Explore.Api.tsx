@@ -21,7 +21,7 @@ export const getEventList = async (token: string) => {
     // console.log('Response:', JSON.stringify(res.data.data, null, 2));
     return res?.data;
   } catch (error) {
-    console.error('Error:', error.message || error);
+    console.error('Error getevent list:', error.message || error);
     throw new Error('Failed to fetch event list');
   }
 };

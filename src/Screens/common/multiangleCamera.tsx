@@ -32,7 +32,7 @@ const MultiAngleCapture = () => {
   const navigation = useNavigation();
 
   let token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzQ2NzQzOTMsImV4cCI6MTczNTI3OTE5M30.EIchBRz3ELLIHSbYeQDL9CEwzzin33-NZ1B0Re1SPlk';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
 
   useEffect(() => {
     const requestPermissions = async () => {
@@ -41,21 +41,21 @@ const MultiAngleCapture = () => {
     requestPermissions();
   }, []);
 
-  const savePhotoToStorage = async photoPath => {
-    try {
-      const directoryPath = RNFS.DocumentDirectoryPath + '/photos';
-      await RNFS.mkdir(directoryPath);
+  // const savePhotoToStorage = async photoPath => {
+  //   try {
+  //     const directoryPath = RNFS.DocumentDirectoryPath + '/photos';
+  //     await RNFS.mkdir(directoryPath);
 
-      const destinationPath = `${directoryPath}/photo_${new Date().getTime()}.jpg`;
-      await RNFS.moveFile(photoPath, destinationPath);
-      console.log('Photo saved to:', destinationPath);
-      let res = getItem();
-      await setItem({...res, face: destinationPath});
-      return destinationPath; // Return the saved path
-    } catch (error) {
-      console.error('Error saving photo to storage:', error);
-    }
-  };
+  //     const destinationPath = `${directoryPath}/photo_${new Date().getTime()}.jpg`;
+  //     await RNFS.moveFile(photoPath, destinationPath);
+  //     console.log('Photo saved to:', destinationPath);
+  //     let res = getItem();
+  //     await setItem({...res, face: destinationPath});
+  //     return destinationPath; // Return the saved path
+  //   } catch (error) {
+  //     console.error('Error saving photo to storage:', error);
+  //   }
+  // };
 
   const uploadPhoto = async photoPath => {
     const formData = new FormData();
@@ -97,13 +97,12 @@ const MultiAngleCapture = () => {
           const fullPath = photo.path.startsWith('file://')
             ? photo.path
             : `file://${photo.path}`;
-          const savedPath = await savePhotoToStorage(fullPath);
-          const res = await getItem();
+          // const savedPath = await savePhotoToStorage(fullPath);
+          // const res = await getItem();
           // setItem({...res, face: savedPath});
-          uploadPhoto(fullPath);
+          await uploadPhoto(fullPath);
         }
       } catch (error) {
-        // Log any error that occurs while taking the photo
         console.error('Error taking photo:', error);
       }
     }

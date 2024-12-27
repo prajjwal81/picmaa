@@ -40,12 +40,13 @@ import {
   postSelectedImages,
 } from '../../../src/API/Explore.Api';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ImageResizer from 'react-native-image-resizer';
 
 const width = Dimensions.get('window').width;
 
 const Photos = () => {
   let token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzQ2NzQzOTMsImV4cCI6MTczNTI3OTE5M30.EIchBRz3ELLIHSbYeQDL9CEwzzin33-NZ1B0Re1SPlk';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
   const [selectedImages, setSelectedImages] = useState(new Set());
   const route = useRoute();
   const {subEvent, type, eventId} = route.params;
@@ -80,16 +81,8 @@ const Photos = () => {
     }, [dispatch, removeBottomTab]),
   );
 
-  // useEffect(() => {
-  //   let local = async () => {
-  //     let user = await getItem();
-  //     setImage(user.face);
-  //   };
-  //   local();
-  // }, []);
-
   useEffect(() => {
-    type === 'my' ? compareImageDirectly() : fetchAllImagesFromS3();
+    type === 'my' ? compareImageWithS3() : fetchAllImagesFromS3();
     const apiCall = async () => {
       let images = await getSelectedImages(eventId, token);
 
@@ -261,51 +254,85 @@ const Photos = () => {
     secretAccessKey: SECRET_KEY_ID,
     region: 'ap-south-1',
   });
-
   const validateImageSize = async uri => {
-    const stats = await stat(uri.replace('file://', ''));
-    if (stats.size > 15 * 1024 * 1024) {
-      throw new Error('Image size exceeds 15MB.');
-    }
-  };
-
-  const selectImage = () => {
-    launchImageLibrary({mediaType: 'photo'}, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.error('ImagePicker Error: ', response.errorMessage);
-      } else {
-        setImage(response.assets[0]);
+    try {
+      const stats = await RNFS.stat(uri.replace('file://', '')); // Ensure correct URI format
+      if (stats.size > 15 * 1024 * 1024) {
+        // Limit: 15MB
+        throw new Error('Image size exceeds 15MB');
       }
-    });
+    } catch (error) {
+      console.error('Error validating image size:', error.message);
+      throw new Error('Failed to validate image size');
+    }
   };
 
   const convertBlobToBytes = async uri => {
     try {
-      console.log('🚀 ~ convertBlobToBytes ~ uri:', uri);
-      const filePath = uri.replace('file://', '');
-      const fileBase64 = await RNFS.readFile(filePath, 'base64');
+      const fileBase64 = await RNFS.readFile(uri, 'base64');
+      console.log(Buffer.from(fileBase64, 'base64'));
       return Buffer.from(fileBase64, 'base64');
     } catch (error) {
-      console.error('Error converting blob to bytes:', error.message);
+      console.error('Error converting image to bytes:', error.message);
       throw new Error('Failed to convert image to bytes');
     }
   };
 
-  const compareImageDirectly = async () => {
-    // if (!image) {
-    //   Alert.alert('Please select an image!');
-    //   return;
-    // }
+  const downloadImageFromS3 = async () => {
+    try {
+      let user = await getItem();
+      let imageUrl = user?.face;
 
+      if (!imageUrl) {
+        throw new Error('No image URL found for the user.');
+      }
+
+      const localFilePath = RNFS.DocumentDirectoryPath + '/downloadedImage.jpg';
+
+      const downloadResult = await RNFS.downloadFile({
+        fromUrl: imageUrl,
+        toFile: localFilePath,
+      }).promise;
+
+      console.log('Download Result:', downloadResult);
+      console.log('Image downloaded to:', localFilePath);
+
+      if (downloadResult?.statusCode !== 200) {
+        throw new Error(
+          `Failed to download image. Status code: ${downloadResult?.statusCode}`,
+        );
+      }
+
+      return localFilePath;
+    } catch (error) {
+      console.error('Error downloading image:', error.message);
+      throw new Error('Failed to download image from S3');
+    }
+  };
+
+  const resizeImage = async uri => {
+    const resizedImage = await ImageResizer.createResizedImage(
+      uri,
+      800,
+      600,
+      'JPEG',
+      80,
+    );
+    return resizedImage.uri;
+  };
+
+  // Function to compare the downloaded image with S3 images
+  const compareImageWithS3 = async () => {
     setLoading(true);
     setMessage('Comparing...');
-    let user = await getItem();
 
     try {
-      await validateImageSize(user.face);
-      const bytes = await convertBlobToBytes(user.face);
+      const localImagePath = await downloadImageFromS3();
+      await validateImageSize(localImagePath);
+
+      const resizedUri = await resizeImage(localImagePath);
+
+      const bytes = await convertBlobToBytes(resizedUri);
 
       console.log('Fetching image list from S3...');
       const listParams = {

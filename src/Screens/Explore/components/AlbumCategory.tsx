@@ -29,7 +29,7 @@ const AlbumCategory = () => {
   const bucketURL = useSelector(state => state?.global?.bucketURL);
 
   let token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzQ2NzQzOTMsImV4cCI6MTczNTI3OTE5M30.EIchBRz3ELLIHSbYeQDL9CEwzzin33-NZ1B0Re1SPlk';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
 
   useEffect(() => {
     const getEvents = async () => {

@@ -48,6 +48,7 @@ const OTP = ({}) => {
     } else {
       const loggedIn = await loginUser(mobile, '1234');
       const user = loggedIn?.data?.user;
+
       await setItem({
         id: user?._id,
         name: user?.name,
@@ -55,7 +56,7 @@ const OTP = ({}) => {
         mobile: user?.mobile,
         accessToken: loggedIn?.data?.accessToken,
         refreshToken: loggedIn?.data?.refreshToken,
-        face: '',
+        face: user?.faceIdImageUrl,
       });
       navigation.navigate('BottomTabs');
     }

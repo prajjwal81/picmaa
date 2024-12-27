@@ -24,8 +24,9 @@ export default function Home() {
 
   return (
     <View>
-      {faceid ? <Events /> : <MultiAngleCapture />}
+      {/* {faceid ? <Events /> : <MultiAngleCapture />} */}
       {/* <ImageUploadScreen /> */}
+      <Events />
     </View>
   );
 }
