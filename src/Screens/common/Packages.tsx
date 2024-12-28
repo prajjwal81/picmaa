@@ -8,10 +8,13 @@ import {
   StyleSheet,
   SafeAreaView,
   Pressable,
+  Modal,
 } from 'react-native';
 import {RazorpayPayment} from '../common/Razorpay';
 import {getPhotograherPackage} from './../..//API/Photgrapher.Api';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {createOrder} from '../../API/Profile.Api';
+import FillDetailsScreen from './fillForm.tsx';
 
 let token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
@@ -21,7 +24,18 @@ const Packages = () => {
   const route = useRoute();
   let {id} = route.params || '';
   const [data, setData] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phoneNumber: '',
+    homeAddress: '',
+    venueAddress: '',
+    date: new Date(),
+    openDatePicker: false,
+  });
 
+  let token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
   useEffect(() => {
     let apiCall = async () => {
       let res = await getPhotograherPackage(id, token);
@@ -34,7 +48,9 @@ const Packages = () => {
     <Pressable
       style={styles.packageCard}
       onPress={async () => {
-        await RazorpayPayment(item?.price);
+        setModal(true);
+        // let createPackage = await createOrder(item._id, token);
+        // await RazorpayPayment(createPackage?.data?.amount);
       }}>
       {item.popular && (
         <View style={styles.popularTag}>
@@ -79,6 +95,14 @@ const Packages = () => {
         renderItem={renderPackage}
         contentContainerStyle={styles.listContainer}
       />
+
+      <Modal visible={modal} animationType="slide" transparent>
+        <FillDetailsScreen
+          setModal={setModal}
+          formData={'formData'}
+          setFormData={setFormData}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -159,6 +183,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  fakeHeight: {
+    height: '20%',
+    backgroundColor: 'rgba(60, 60, 60, 0.5)',
   },
 });
 

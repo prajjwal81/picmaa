@@ -16,3 +16,4 @@ export const ADD_FACE_ID = `${BASE_URL}users/update-face-id`;
 export const POST_SELECTED_IMAGES = `${BASE_URL}events/add-selected-images`;
 export const GET_SELECTED_IMAGES = `${BASE_URL}events/selected-images`;
 export const DELETE_SELECTED_IMAGES = `${BASE_URL}events/remove-selected-images`;
+export const CREATE_ORDER = `${BASE_URL}payments/create-order`;

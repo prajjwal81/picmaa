@@ -6,6 +6,7 @@ import {getItem} from '../..//utils/asyncStorage';
 import MultiAngleCapture from '../common/multiangleCamera';
 import {useDispatch, useSelector} from 'react-redux';
 import {toggleBottomTab} from '../../../Redux/Global/GlobalSlice';
+import FillDetailsScreen from '../common/fillForm';
 
 export default function Home() {
   const [faceid, setFaceid] = useState(false);
@@ -27,6 +28,7 @@ export default function Home() {
       {/* {faceid ? <Events /> : <MultiAngleCapture />} */}
       {/* <ImageUploadScreen /> */}
       <Events />
+      {/* <FillDetailsScreen /> */}
     </View>
   );
 }

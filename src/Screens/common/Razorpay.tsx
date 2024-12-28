@@ -9,7 +9,7 @@ export const RazorpayPayment = async amount => {
       description: 'Credits towards consultation',
       image: 'https://i.imgur.com/3g7nmJC.jpg',
       currency: 'INR',
-      key: 'rzp_test_fd5M4m6uN8RUy6',
+      key: 'rzp_test_tX7OYv8wO9psps',
       amount: finalAmount,
       name: 'UNIFI CARS',
       order_id: '',

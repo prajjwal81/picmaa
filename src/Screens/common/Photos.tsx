@@ -14,10 +14,10 @@ import {
   PanResponder,
   BackHandler,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Share from '../../Images/svg/share.svg';
 import Button from './Button';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -457,7 +457,8 @@ const Photos = () => {
       {loading ? (
         <>
           <Image source={{uri: `${image}`}} style={{width: 300, height: 300}} />
-          <Text>{message}</Text>
+          {/* <Text>{message}</Text> */}
+          <ActivityIndicator color={'blue'} size={100} />
         </>
       ) : (
         <View style={styles.container}>
