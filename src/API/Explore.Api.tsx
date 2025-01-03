@@ -45,7 +45,6 @@ export const postSelectedImages = async (
   eventId: string,
   token: string,
 ) => {
-  console.log(images, 'yele');
   try {
     const res = await axios.post(
       `${POST_SELECTED_IMAGES}`,

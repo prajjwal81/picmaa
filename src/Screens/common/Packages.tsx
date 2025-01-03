@@ -13,32 +13,24 @@ import {
 import {RazorpayPayment} from '../common/Razorpay';
 import {getPhotograherPackage} from './../..//API/Photgrapher.Api';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {createOrder} from '../../API/Profile.Api';
+import {createOrder, updateOrderDetails} from '../../API/Profile.Api';
 import FillDetailsScreen from './fillForm.tsx';
-
-let token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
+import {getItem} from '../../utils/asyncStorage.tsx';
 
 const Packages = () => {
   const navigation = useNavigation();
   const route = useRoute();
   let {id} = route.params || '';
   const [data, setData] = useState([]);
-  const [modal, setModal] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: '',
-    phoneNumber: '',
-    homeAddress: '',
-    venueAddress: '',
-    date: new Date(),
-    openDatePicker: false,
-  });
 
-  let token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
+  // let token =
+  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
+
   useEffect(() => {
     let apiCall = async () => {
-      let res = await getPhotograherPackage(id, token);
+      const item = await getItem();
+      let res = await getPhotograherPackage(id, item?.accessToken);
+      // let res = await getPhotograherPackage(id, token);
       setData(res.data);
     };
     apiCall();
@@ -48,9 +40,18 @@ const Packages = () => {
     <Pressable
       style={styles.packageCard}
       onPress={async () => {
-        setModal(true);
+        const item = await getItem();
+        let createPackage = await createOrder(item._id, item?.accessToken);
         // let createPackage = await createOrder(item._id, token);
-        // await RazorpayPayment(createPackage?.data?.amount);
+        let razorpay = await RazorpayPayment(createPackage?.data?.amount);
+        let updateOrderDetail = await updateOrderDetails(
+          createPackage?.transactionId,
+          razorpay?.razorpay_payment_id,
+          item?.accessToken,
+          // token,
+        );
+        console.log(updateOrderDetail, 'aagay mai');
+        // navigation.navigate('');
       }}>
       {item.popular && (
         <View style={styles.popularTag}>
@@ -71,7 +72,7 @@ const Packages = () => {
       <TouchableOpacity
         style={styles.buyButton}
         onPress={async () => {
-          await RazorpayPayment(item?.price);
+          await RazorpayPayment(createPackage?.data?.amount);
         }}>
         <Text style={styles.buyButtonText}>Buy Now</Text>
       </TouchableOpacity>
@@ -95,14 +96,6 @@ const Packages = () => {
         renderItem={renderPackage}
         contentContainerStyle={styles.listContainer}
       />
-
-      <Modal visible={modal} animationType="slide" transparent>
-        <FillDetailsScreen
-          setModal={setModal}
-          formData={'formData'}
-          setFormData={setFormData}
-        />
-      </Modal>
     </SafeAreaView>
   );
 };
@@ -187,6 +180,9 @@ const styles = StyleSheet.create({
   fakeHeight: {
     height: '20%',
     backgroundColor: 'rgba(60, 60, 60, 0.5)',
+  },
+  backicon: {
+    left: '5%',
   },
 });
 

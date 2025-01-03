@@ -41,12 +41,15 @@ import {
 } from '../../../src/API/Explore.Api';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImageResizer from 'react-native-image-resizer';
+import {MultipleImagesSkeleton} from './Skeleton';
 
 const width = Dimensions.get('window').width;
+console.log(ACCESS_KEY_ID, SECRET_KEY_ID);
 
 const Photos = () => {
-  let token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
+  // let token =
+  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
+
   const [selectedImages, setSelectedImages] = useState(new Set());
   const route = useRoute();
   const {subEvent, type, eventId} = route.params;
@@ -84,7 +87,9 @@ const Photos = () => {
   useEffect(() => {
     type === 'my' ? compareImageWithS3() : fetchAllImagesFromS3();
     const apiCall = async () => {
-      let images = await getSelectedImages(eventId, token);
+      const item = await getItem();
+      let images = await getSelectedImages(eventId, item?.accessToken);
+      // let images = await getSelectedImages(eventId, token);
 
       images.selectedPhotos.map(item => {
         selectedImages.add(item.s3Path);
@@ -236,8 +241,10 @@ const Photos = () => {
     setSelectedImages(Images);
   };
 
-  let submitHandler = () => {
-    postSelectedImages([...selectedImages], eventId, token);
+  let submitHandler = async () => {
+    const item = await getItem();
+    postSelectedImages([...selectedImages], eventId, item?.accessToken);
+    // postSelectedImages([...selectedImages], eventId, token);
   };
 
   // .......................................s3.......................................
@@ -455,11 +462,10 @@ const Photos = () => {
   return (
     <>
       {loading ? (
-        <>
-          <Image source={{uri: `${image}`}} style={{width: 300, height: 300}} />
-          {/* <Text>{message}</Text> */}
-          <ActivityIndicator color={'blue'} size={100} />
-        </>
+        <View style={{padding: '5%', paddingTop: '15%'}}>
+          <MultipleImagesSkeleton />
+          <MultipleImagesSkeleton />
+        </View>
       ) : (
         <View style={styles.container}>
           <View style={styles.header}>

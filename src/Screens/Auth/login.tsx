@@ -192,9 +192,9 @@ const Login = () => {
             <View style={{alignItems: 'center'}}>
               <View style={styles.checkboxContainer}></View>
 
-              <Text style={styles.orText}>Or Continue With</Text>
+              {/* <Text style={styles.orText}>Or Continue With</Text> */}
 
-              <View style={styles.socialContainer}>
+              {/* <View style={styles.socialContainer}>
                 <Pressable style={styles.socialButton}>
                   <Google />
                 </Pressable>
@@ -206,7 +206,7 @@ const Login = () => {
                     style={styles.socialIcon}
                   />
                 </Pressable>
-              </View>
+              </View> */}
             </View>
           </View>
         </LinearGradient>

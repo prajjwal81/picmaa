@@ -27,11 +27,13 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import {toggleBottomTab} from '../../../../Redux/Global/GlobalSlice';
 import {useDispatch} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {getItem} from '../../../utils/asyncStorage';
 
 const width = Dimensions.get('window').width;
 export default function MyPhotos() {
-  let token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
+  // let token =
+  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5NWFiOGQwMjlmMzE4ODQxOWZhODgiLCJpYXQiOjE3MzUyODA2MTcsImV4cCI6MTczNTg4NTQxN30.Fhw6tS9Q-2elp52vEgqayeW9PYA3G_-G2fRQPurH_xI';
+
   const route = useRoute();
   const dispatch = useDispatch();
   const {sublistItem} = route.params;
@@ -66,6 +68,7 @@ export default function MyPhotos() {
       },
     }),
   );
+
   const keyExtractor = useCallback((_, index) => index.toString(), []);
 
   const renderfullImage = ({item}) => {
@@ -115,17 +118,26 @@ export default function MyPhotos() {
     );
   };
 
-  let submitHandler = () => {
-    deleteSelectedImages([...deselectedImage], sublistItem._id, token);
+  let submitHandler = async () => {
+    const item = await getItem();
+    deleteSelectedImages(
+      [...deselectedImage],
+      sublistItem._id,
+      item?.accessToken,
+    );
+    // deleteSelectedImages([...deselectedImage], sublistItem._id, token);
   };
 
   useEffect(() => {
     const apiCall = async () => {
-      let images = await getSelectedImages(sublistItem._id, token);
+      const item = await getItem();
+      let images = await getSelectedImages(sublistItem._id, tem?.accessToken);
+      // let images = await getSelectedImages(sublistItem._id, token);
       setImage(images.selectedPhotos);
     };
     apiCall();
   }, []);
+
   const renderCategory = ({item}) => {
     return (
       <TouchableOpacity

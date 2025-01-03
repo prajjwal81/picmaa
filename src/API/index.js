@@ -1,4 +1,4 @@
-const BASE_URL = 'http://192.168.0.113:6000/api/';
+const BASE_URL = 'http://localhost:6000/api/';
 
 export const LOGIN = `${BASE_URL}public/mobile-login`;
 export const Register_User = `${BASE_URL}public/signup`;
@@ -17,3 +17,7 @@ export const POST_SELECTED_IMAGES = `${BASE_URL}events/add-selected-images`;
 export const GET_SELECTED_IMAGES = `${BASE_URL}events/selected-images`;
 export const DELETE_SELECTED_IMAGES = `${BASE_URL}events/remove-selected-images`;
 export const CREATE_ORDER = `${BASE_URL}payments/create-order`;
+export const UPDATE_ORDER_DETAIL = `${BASE_URL}transaction/update-details`;
+export const FILL_FORM_DETAIL = `${BASE_URL}events/create`;
+export const GET_EVENT_LIST_WITH_UPDATES = `${BASE_URL}events/get-list-user`;
+export const DELETE_MY_ACCOUNT = `${BASE_URL}users/deActivate-account`;

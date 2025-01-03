@@ -13,8 +13,8 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Profile from '../../Images/svg/profileCircler.svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {getUserProfile} from '../../API/Profile.Api';
-import {clearItem} from '../../utils/asyncStorage';
+import {DeleteAccount, getUserProfile} from '../../API/Profile.Api';
+import {clearItem, getItem} from '../../utils/asyncStorage';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
@@ -37,6 +37,7 @@ const ProfileScreen = () => {
           text: 'OK',
           onPress: () => {
             clearItem();
+            navigation.navigate('Login');
           },
         },
       ],
@@ -44,17 +45,43 @@ const ProfileScreen = () => {
     );
   };
 
-  useEffect(() => {}, [logoutHandler]);
+  const deleteHandler = async () => {
+    Alert.alert(
+      'Confirmation',
+      'You want to Delete your account ?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: async () => {
+            const res = await DeleteAccount(user?.accessToken);
+            if (res.message === 'user deactivated successfully') {
+              clearItem();
+              navigation.navigate('Login');
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+
+    const user = await getItem();
+    const res = DeleteAccount(user?.accessToken);
+  };
 
   let navigationHandler = label => {
     if (label === 'My Favourites Photos') {
       navigation.navigate('AlbumCategory', {screen: 'profile'});
     } else if (
-      label === 'My All Packages' ||
+      label === 'All Packages' ||
       label === 'Completed Packages' ||
       label === 'Canceled Packages'
     ) {
-      navigation.navigate('TypeOfPackages');
+      navigation.navigate('TypeOfPackages', label);
     }
   };
 
@@ -137,7 +164,7 @@ const ProfileScreen = () => {
           />
           <MenuItem
             iconName="book-outline"
-            label="My All Packages"
+            label="All Packages"
             position="left"
           />
           <MenuItem
@@ -179,7 +206,12 @@ const ProfileScreen = () => {
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.deleteButton}>
-            <Icon name="trash-outline" size={20} color="#e74c3c" />
+            <Icon
+              name="trash-outline"
+              size={20}
+              color="#e74c3c"
+              onPress={deleteHandler}
+            />
             <Text style={styles.deleteText}>Delete Account</Text>
           </TouchableOpacity>
         </View>
