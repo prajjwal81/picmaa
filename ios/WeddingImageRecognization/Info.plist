@@ -149,5 +149,30 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+    <!-- App Icon Configuration -->
+	<key>CFBundleIcons</key>
+     <dict>
+    <key>CFBundlePrimaryIcon</key>
+    <dict>
+        <key>CFBundleIconFiles</key>
+        <array>
+            <string>Icon-App-20x20@2x.png</string>
+            <string>Icon-App-20x20@3x.png</string>
+            <string>Icon-App-29x29@2x.png</string>
+            <string>Icon-App-29x29@3x.png</string>
+            <string>Icon-App-40x40@2x.png</string>
+            <string>Icon-App-40x40@3x.png</string>
+            <string>Icon-App-60x60@2x.png</string>
+            <string>Icon-App-60x60@3x.png</string>
+            <string>Icon-App-76x76@1x.png</string>
+            <string>Icon-App-76x76@2x.png</string>
+            <string>Icon-App-83.5x83.5@2x.png</string>
+            <string>Icon-App-1024x1024.png</string>
+        </array>
+        <key>CFBundleIconName</key>
+        <string>AppIcon</string>
+    </dict>
+</dict>
 </dict>
 </plist>
