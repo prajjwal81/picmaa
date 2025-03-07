@@ -66,6 +66,7 @@ export const postSelectedImages = async (
 };
 
 export const getSelectedImages = async (id: string, token: string) => {
+  console.log('🚀 ~ getSelectedImages ~ id:', id);
   try {
     const res = await axios.get(`${GET_SELECTED_IMAGES}/${id}`, {
       headers: {

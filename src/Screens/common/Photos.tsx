@@ -15,6 +15,7 @@ import {
   BackHandler,
   Platform,
   ActivityIndicator,
+  TextInput,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -42,6 +43,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImageResizer from 'react-native-image-resizer';
 import {MultipleImagesSkeleton} from './Skeleton';
+import Share from '../../Images/svg/share.svg';
 
 const width = Dimensions.get('window').width;
 console.log(ACCESS_KEY_ID, SECRET_KEY_ID);
@@ -59,11 +61,11 @@ const Photos = () => {
   const [zoomScale, setZoomScale] = useState(1);
   const [isZoomed, setIsZoomed] = useState(false); // Track zoom state
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [matchedImages, setMatchedImages] = useState([]);
+  const [shareModal, setShareModal] = useState(false);
+  const [shareNumber, setShareNumber] = useState('');
   const bucketURL = useSelector(state => state?.global?.bucketURL);
   const removeBottomTab = useSelector(state => state?.global?.removeBottomTab);
 
@@ -246,6 +248,8 @@ const Photos = () => {
     postSelectedImages([...selectedImages], eventId, item?.accessToken);
     // postSelectedImages([...selectedImages], eventId, token);
   };
+
+  const shareHandler = () => {};
 
   // .......................................s3.......................................
   // Rekognition Config
@@ -494,11 +498,15 @@ const Photos = () => {
           <View style={styles.content}>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={styles.mainTitle}>All Photos</Text>
-              {/* <View style={styles.btnContainer}>
-            <Share />
-            <Text style={styles.btnText}>Share </Text>
-          </View> */}
+              <Text style={styles.mainTitle}>{type} Photos</Text>
+              <Pressable
+                style={styles.btnContainer}
+                onPress={() => {
+                  setShareModal(true);
+                }}>
+                <Share />
+                <Text style={styles.btnText}>Share </Text>
+              </Pressable>
             </View>
 
             <FlatList
@@ -531,6 +539,74 @@ const Photos = () => {
               />
             </View>
           </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={shareModal}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              // ReportModalHandler();
+            }}>
+            <Pressable
+              style={[
+                styles.modalContainer,
+                {
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.8)',
+                },
+              ]}
+              onPress={() => {
+                setShareModal(false);
+              }}>
+              <AntDesign
+                name="closecircle"
+                size={35}
+                color="white"
+                style={{position: 'absolute', top: 70, right: 30}}
+                onPress={() => {
+                  setShareModal(false);
+                }}
+              />
+
+              <View
+                style={{
+                  width: '100%',
+                  backgroundColor: 'white',
+                  padding: 20,
+                  borderRadius: 10,
+                }}>
+                <Text style={{left: '2%', bottom: 5, fontSize: 15}}>
+                  Enter the Number
+                </Text>
+
+                <TextInput
+                  placeholder="Your Number"
+                  placeholderTextColor={'black'}
+                  style={{
+                    width: '100%',
+                    height: 60,
+                    backgroundColor: 'rgba(233, 233, 233, 1)',
+                    borderRadius: 10,
+                    paddingLeft: '5%',
+                  }}
+                  value={shareNumber}
+                  onChangeText={setShareNumber}
+                />
+
+                <View style={{height: 50, marginTop: '5%'}}>
+                  <Button
+                    height={'100%'}
+                    text={'Submit'}
+                    width={'100%'}
+                    press={() => {
+                      shareHandler();
+                    }}
+                  />
+                </View>
+              </View>
+            </Pressable>
+          </Modal>
         </View>
       )}
     </>
@@ -574,6 +650,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontFamily: 'Roboto',
     letterSpacing: 0.6,
+    textTransform: 'capitalize',
   },
   mainSubtitle: {
     fontSize: 14,

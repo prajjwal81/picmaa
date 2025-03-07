@@ -27,11 +27,12 @@ const AccountDeletedScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    height: '100%',
   },
   closeButton: {
     position: 'absolute',

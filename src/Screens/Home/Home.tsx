@@ -10,8 +10,6 @@ import FillDetailsScreen from '../common/fillForm';
 
 export default function Home() {
   const [faceid, setFaceid] = useState(false);
-  const removeBottomTab = useSelector(state => state?.global?.removeBottomTab);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const loginhandler = async () => {
@@ -32,18 +30,3 @@ export default function Home() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    // borderWidth: 1,
-  },
-  heading: {
-    borderWidth: 1,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-});

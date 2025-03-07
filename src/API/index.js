@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:6000/api/';
+const BASE_URL = 'http://192.168.0.135:5000/api/';
 
 export const LOGIN = `${BASE_URL}public/mobile-login`;
 export const Register_User = `${BASE_URL}public/signup`;
@@ -21,3 +21,5 @@ export const UPDATE_ORDER_DETAIL = `${BASE_URL}transaction/update-details`;
 export const FILL_FORM_DETAIL = `${BASE_URL}events/create`;
 export const GET_EVENT_LIST_WITH_UPDATES = `${BASE_URL}events/get-list-user`;
 export const DELETE_MY_ACCOUNT = `${BASE_URL}users/deActivate-account`;
+export const SHARE = `${BASE_URL}`;
+export const GET_NUMBERS = `${BASE_URL}`;

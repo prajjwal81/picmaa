@@ -4,6 +4,7 @@ import {
   DELETE_MY_ACCOUNT,
   FILL_FORM_DETAIL,
   GET_EVENT_LIST_WITH_UPDATES,
+  GET_NUMBERS,
   Get_USER_PROFILE,
   UPDATE_ORDER_DETAIL,
   USER_PROFILE_UPDATE,
@@ -44,8 +45,6 @@ export const userProfileUpdate = async (name, email, phone) => {
 };
 
 export const createOrder = async (id, token) => {
-  console.log('🚀 ~ createOrder ~ token:', token);
-  console.log('🚀 ~ createOrder ~ id:', id);
   try {
     const res = await axios.post(
       `${CREATE_ORDER}`,
@@ -154,5 +153,19 @@ export const DeleteAccount = async (token: string) => {
       error.message || error,
     );
     throw new Error('Failed to fetch event list');
+  }
+};
+
+export const getNumber = async (token: string) => {
+  try {
+    const res = await axios.get(`${GET_NUMBERS}`, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+    return res?.data;
+  } catch (error) {
+    console.error('Error getNumber :', error.message || error);
+    throw new Error('Failed to fetch getNumber list');
   }
 };

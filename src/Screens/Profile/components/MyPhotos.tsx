@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -22,12 +23,17 @@ import Button from '../../../Screens/common/Button';
 import FastImage from 'react-native-fast-image';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useFocusEffect, useRoute} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import ImageZoom from 'react-native-image-pan-zoom';
 import {toggleBottomTab} from '../../../../Redux/Global/GlobalSlice';
 import {useDispatch} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {getItem} from '../../../utils/asyncStorage';
+import Share from '../../../Images/svg/share.svg';
 
 const width = Dimensions.get('window').width;
 export default function MyPhotos() {
@@ -43,6 +49,9 @@ export default function MyPhotos() {
   const [imageModal, setImageModal] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false); // Track zoom state
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [shareModal, setShareModal] = useState(false);
+  const [shareNumber, setShareNumber] = useState('');
+  const navigation = useNavigation();
 
   useFocusEffect(() => {
     dispatch(toggleBottomTab(false));
@@ -131,7 +140,8 @@ export default function MyPhotos() {
   useEffect(() => {
     const apiCall = async () => {
       const item = await getItem();
-      let images = await getSelectedImages(sublistItem._id, tem?.accessToken);
+      let images = await getSelectedImages(sublistItem._id, item?.accessToken);
+      console.log('🚀 ~ apiCall ~ images:', images);
       // let images = await getSelectedImages(sublistItem._id, token);
       setImage(images.selectedPhotos);
     };
@@ -207,6 +217,8 @@ export default function MyPhotos() {
       </TouchableOpacity>
     );
   };
+
+  const shareHandler = () => {};
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -233,10 +245,14 @@ export default function MyPhotos() {
       <View style={styles.content}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Text style={styles.mainTitle}>All Photos</Text>
-          {/* <View style={styles.btnContainer}>
+          <Pressable
+            style={styles.btnContainer}
+            onPress={() => {
+              setShareModal(true);
+            }}>
             <Share />
             <Text style={styles.btnText}>Share </Text>
-          </View> */}
+          </Pressable>
         </View>
 
         <FlatList
@@ -269,6 +285,75 @@ export default function MyPhotos() {
           />
         </View>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={shareModal}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          // ReportModalHandler();
+        }}>
+        <Pressable
+          style={[
+            styles.modalContainer,
+            {
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,0.8)',
+            },
+          ]}
+          onPress={() => {
+            setShareModal(false);
+          }}>
+          <AntDesign
+            name="closecircle"
+            size={35}
+            color="white"
+            style={{position: 'absolute', top: 70, right: 30}}
+            onPress={() => {
+              setShareModal(false);
+            }}
+          />
+
+          <View
+            style={{
+              width: '100%',
+              backgroundColor: 'white',
+              padding: 20,
+              borderRadius: 10,
+            }}>
+            <Text style={{left: '2%', bottom: 5, fontSize: 15}}>
+              Enter the Number
+            </Text>
+
+            <TextInput
+              placeholder="Your Number"
+              placeholderTextColor={'black'}
+              style={{
+                width: '100%',
+                height: 60,
+                backgroundColor: 'rgba(233, 233, 233, 1)',
+                borderRadius: 10,
+                paddingLeft: '5%',
+              }}
+              value={shareNumber}
+              onChangeText={setShareNumber}
+            />
+
+            <View style={{height: 50, marginTop: '5%'}}>
+              <Button
+                height={'100%'}
+                text={'Submit'}
+                width={'100%'}
+                press={() => {
+                  shareHandler();
+                }}
+              />
+            </View>
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 }

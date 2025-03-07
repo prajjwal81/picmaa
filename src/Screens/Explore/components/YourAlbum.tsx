@@ -14,13 +14,6 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import Button from '../../common/Button';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {getEvent, getEventList} from '../../../API/Explore.Api';
-import {getItem} from '../../../utils/asyncStorage';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  setBucketURL,
-  setProfilePhoto,
-} from '../../../../Redux/Global/GlobalSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const width = Dimensions.get('window').width;
@@ -30,9 +23,6 @@ const YourAlbum = () => {
   const navigation = useNavigation();
   const route = useRoute();
   let {sublistItem} = route.params;
-  const dispatch = useDispatch();
-  const bucketURL = useSelector(state => state?.global?.bucketURL);
-  // console.log('🚀 ~ YourAlbum ~ bucketURL:', bucketURL);
 
   const renderCategory = ({item}) => {
     const modalHandler = () => {

@@ -12,6 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Button from '../../common/Button';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {getEvent, getEventList} from '../../../API/Explore.Api';
@@ -22,6 +23,7 @@ import {setBucketURL} from '../../.././../Redux/Global/GlobalSlice';
 const AlbumCategory = () => {
   const route = useRoute();
   const {screen} = route?.params || '';
+  console.log('🚀 ~ AlbumCategory ~ screen:', screen);
   const [modal, setModal] = useState(false);
   const navigation = useNavigation();
   const [sublistItem, setSubListItem] = useState([]);
@@ -59,6 +61,19 @@ const AlbumCategory = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          {screen == 'profile' ? (
+            <Ionicons
+              name="arrow-back"
+              size={30}
+              color="#fff"
+              style={{right: Dimensions.get('window').width / 6}}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          ) : (
+            ''
+          )}
           <Entypo
             name="camera"
             size={25}

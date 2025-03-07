@@ -1,4 +1,6 @@
 import {
+  Dimensions,
+  Image,
   Platform,
   Pressable,
   StyleSheet,
@@ -11,22 +13,34 @@ import ProfileIcon from '../../../Images/svg/profile.svg';
 import MailIcon from '../../../Images/svg/Mail.svg';
 import PhoneIcon from '../../../Images/svg/phone.svg';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {userProfileUpdate} from '../../../API/Profile.Api';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 const Profile = () => {
   const route = useRoute();
   const user = route.params;
   const [name, setName] = useState(user?.data?.name);
   const [email, setEmail] = useState(user?.data?.email);
   const [phone, setPhone] = useState(user?.data?.mobile);
+  const navigation = useNavigation();
 
   const updateHandler = async () => {
     const res = await userProfileUpdate(name, email, phone);
   };
+
   return (
-    <View>
+    <View style={{backgroundColor: 'white'}}>
       <View style={styles.header}>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Ionicons
+            name="arrow-back"
+            size={30}
+            color="#fff"
+            style={{right: Dimensions.get('window').width / 6}}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
           <Entypo
             name="camera"
             size={25}
@@ -37,14 +51,18 @@ const Profile = () => {
         </View>
       </View>
       <View style={styles.container}>
-        <View
-          style={[
-            styles.circle,
-            styles.container,
-            {backgroundColor: '#D9D9D9'},
-          ]}>
-          <Text style={styles.heading}>{user?.data?.name?.[0]}</Text>
-        </View>
+        {user?.data?.avatarUrl ? (
+          <Image source={{uri: user?.data?.avatarUrl}} style={styles.image} />
+        ) : (
+          <View
+            style={[
+              styles.circle,
+              styles.container,
+              {backgroundColor: '#D9D9D9'},
+            ]}>
+            <Text style={styles.heading}>{user?.data?.name?.[0]}</Text>
+          </View>
+        )}
         <Text style={styles.name}>{user?.data?.name}</Text>
         <View style={styles.innerContainer}>
           <View style={styles.rowContainer}>
@@ -167,5 +185,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontWeight: '600',
     fontSize: 16,
+  },
+  image: {
+    width: '20%',
+    height: '20%',
+    borderRadius: 100,
   },
 });

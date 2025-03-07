@@ -82,6 +82,8 @@ const ProfileScreen = () => {
       label === 'Canceled Packages'
     ) {
       navigation.navigate('TypeOfPackages', label);
+    } else if (label === 'Shared Number') {
+      navigation.navigate('SharedNumbers');
     }
   };
 
@@ -125,8 +127,11 @@ const ProfileScreen = () => {
     <View style={{backgroundColor: 'white'}}>
       <View style={styles.header} />
       <View style={styles.profileContainer}>
-        {!profile?.data?.avatarUrl ? (
-          <Image source={{uri: profile?.data?.avatarUrl}} />
+        {!!profile?.data?.avatarUrl ? (
+          <Image
+            source={{uri: profile?.data?.avatarUrl}}
+            style={styles.image}
+          />
         ) : (
           <View style={styles.avatar}>
             <FontAwesome
@@ -162,6 +167,13 @@ const ProfileScreen = () => {
             label="My Favourites Photos"
             position="left"
           />
+
+          <MenuItem
+            iconName="star-outline"
+            label="Shared Number"
+            position="left"
+          />
+
           <MenuItem
             iconName="book-outline"
             label="All Packages"
@@ -337,6 +349,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontFamily: 'Sansation-Bold',
     marginLeft: 15,
+  },
+  image: {
+    width: width / 3.5,
+    height: height / 8,
+    borderRadius: 100,
+    position: 'absolute',
+    top: '-70%',
   },
 });
 

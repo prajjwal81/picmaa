@@ -9,6 +9,7 @@ import MyPhotos from '../Screens/Profile/components/MyPhotos';
 import AlbumCategory from '../Screens/Explore/components/AlbumCategory';
 import TypeOfPackages from '../Screens/Profile/components/typeOfPackages';
 import Login from '../Screens/Auth/login';
+import SharedNumbers from '../Screens/Profile/components/sharedNumbers';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,7 @@ const ProfileStack = () => {
       <Stack.Screen name="AlbumCategory" component={AlbumCategory} />
       <Stack.Screen name="TypeOfPackages" component={TypeOfPackages} />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="SharedNumbers" component={SharedNumbers} />
     </Stack.Navigator>
   );
 };
